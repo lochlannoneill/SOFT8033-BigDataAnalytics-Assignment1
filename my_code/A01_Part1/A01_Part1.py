@@ -18,8 +18,6 @@
 # IMPORTS
 # ------------------------------------------
 import os
-import codecs
-import csv
 from collections import defaultdict
 
 
@@ -76,6 +74,7 @@ def get_stations(input_folder):
     """
     starts = defaultdict(int)  # Initialise value with 0, automatically creates default value for nonexistant key
     stops = defaultdict(int)
+
     with os.scandir(input_folder) as filenames:  # os.scandir() is a generator => better performance than os.listdir()
         for filename in filenames:
             if filename.is_file():
@@ -110,7 +109,6 @@ def write_stations(output_file, starts, stops, names):
             start_count = starts.get(name, 0)
             stop_count = stops.get(name, 0)
             file.write(f"{name}\t({start_count}, {stop_count})\n")
-
 
 
 # ------------------------------------------
