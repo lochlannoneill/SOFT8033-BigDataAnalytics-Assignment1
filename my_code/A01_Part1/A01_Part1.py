@@ -8,8 +8,8 @@
 #
 # The program provides three functions:
 # (1) process_line(line): Parses a line of the CSV file and returns a dictionary.
-# (2) get_stations(input_folder): Gets the unique start and stop station names from the CSV files in the input folder.
-# (3) write_stations(output_file, starts, stops, names): Writes list of stations and their respective counts to file.
+# (2) parse_in(input_folder): Gets the unique start and stop station names from the CSV files in the input folder.
+# (3) parse_out(output_file, starts, stops, names): Writes list of stations and their respective counts to file.
 #
 # --------------------------------------------------------
 
@@ -57,9 +57,9 @@ def process_line(line):
 
 
 # ------------------------------------------
-# FUNCTION process_csv
+# FUNCTION parse_in
 # ------------------------------------------
-def get_stations(input_folder):
+def parse_in(input_folder):
     """
     Returns unique start and stop station names from the CSV files in the input folder, along with the count of each
     occurrence.
@@ -89,9 +89,9 @@ def get_stations(input_folder):
 
 
 # ------------------------------------------
-# FUNCTION write_output
+# FUNCTION parse_out
 # ------------------------------------------
-def write_stations(output_file, starts, stops, names):
+def parse_out(output_file, starts, stops, names):
     """
     Writes list of stations and their respective counts to file.
 
@@ -115,12 +115,12 @@ def write_stations(output_file, starts, stops, names):
 # FUNCTION my_main
 # ------------------------------------------
 def my_main(input_folder, output_file):
-    starts, stops, names = get_stations(input_folder)
-    print(len(starts), 'starts => ', dict(list(starts.items())[-3:]))  # 796
-    print(len(stops), 'stops => ', dict(list(stops.items())[-3:]))  # 799
-    print(len(names), 'names => ', names[-3:])
+    starts, stops, names = parse_in(input_folder)
+    print(len(starts), 'total starts => ', dict(list(starts.items())[-3:]))  # 796
+    print(len(stops), 'total stops => ', dict(list(stops.items())[-3:]))  # 799
+    print(len(names), 'unique names => ', names[-3:]) # 800
 
-    write_stations(output_file, starts, stops, names)
+    parse_out(output_file, starts, stops, names)
 
 
 # ---------------------------------------------------------------
