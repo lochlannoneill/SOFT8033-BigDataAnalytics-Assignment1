@@ -7,16 +7,19 @@
 # along with their respective counts to a tab-separated output file.
 #
 # The program provides three functions:
-# (1) process_line(line): Parses a line of the CSV file and returns a dictionary.
-# (2) parse_in(input_folder): Gets the unique start and stop station names from the CSV files in the input folder.
-# (3) parse_out(output_file, starts, stops, names): Writes list of stations and their respective counts to file.
+#
+#   process_line(line):
+#       Parses a line of the CSV file and returns a tuple of start and stop station names.
+#
+#   parse_in(input_folder):
+#       Gets the unique start and stop station names from the CSV files in the input folder.
+#
+#   parse_out(output_file, starts, stops, names):
+#       Writes list of stations and their respective counts to file.
 #
 # --------------------------------------------------------
 
 
-# ------------------------------------------
-# IMPORTS
-# ------------------------------------------
 import os
 from collections import defaultdict
 
@@ -29,7 +32,7 @@ def process_line(line):
     Parse a line of the CSV file and return a tuple of start and stop station names.
 
     Args:
-        line (str): The unprocessed line.
+        line (str): A string containing a line of the CSV file.
 
     Returns:
         tuple: A tuple of two strings, representing the start and stop station names, respectively.
@@ -69,8 +72,8 @@ def parse_in(input_folder):
 
     Returns:
         tuple: A tuple of three items. The first item is a sorted list of unique station names, including all stations
-        that appear as either a start or stop station. The second item is a dictionary containing the count of each unique
-        start station name. The third item is a dictionary containing the count of each unique stop station name.
+            that appear as either a start or stop station. The second item is a dictionary containing the count of each unique
+            start station name. The third item is a dictionary containing the count of each unique stop station name.
     """
     starts = defaultdict(int)  # Initialise value with 0, automatically creates default value for nonexistant key
     stops = defaultdict(int)
@@ -93,13 +96,13 @@ def parse_in(input_folder):
 # ------------------------------------------
 def parse_out(output_file, starts, stops, names):
     """
-    Writes list of stations and their respective counts to file.
+    Writes a list of station names and their respective start and stop counts to a file.
 
     Args:
         output_file (str): The name of the output file.
-        names (list): A list of unique station names to include in the output file.
         starts (defaultdict): A dictionary containing the count of each unique start station name.
         stops (defaultdict): A dictionary containing the count of each unique stop station name.
+        names (list): A list of unique station names to include in the output file.
 
     Returns:
         None
@@ -115,10 +118,20 @@ def parse_out(output_file, starts, stops, names):
 # FUNCTION my_main
 # ------------------------------------------
 def my_main(input_folder, output_file):
+    """
+    Parse input folder and generate output file with information about bike trips.
+
+    Args:
+        input_folder (str): Path to the folder containing input CSV files.
+        output_file (str): Path to the output file.
+
+    Returns:
+        None
+    """
     starts, stops, names = parse_in(input_folder)
-    print(len(starts), 'total starts => ', dict(list(starts.items())[-3:]))  # 796
-    print(len(stops), 'total stops => ', dict(list(stops.items())[-3:]))  # 799
-    print(len(names), 'unique names => ', names[-3:]) # 800
+    print(len(starts), 'total starts => ', dict(list(starts.items())[-1:]))  # 796
+    print(len(stops), 'total stops => ', dict(list(stops.items())[-1:]))  # 799
+    print(len(names), 'unique names => ', names[-1:]) # 800
 
     parse_out(output_file, starts, stops, names)
 
