@@ -56,7 +56,7 @@ def process_line(line):
         # res['birth_year'] = int(fields[13])
         # res['gender'] = int(fields[14])
         # res['trip_id'] = int(fields[15])
-    return res['start_station_name'], res['stop_station_name']
+    return res
 
 
 # ------------------------------------------
@@ -83,7 +83,9 @@ def parse_in(input_folder):
             if filename.is_file():
                 with open(filename, 'r') as file:
                     for line in file:
-                        start_name, stop_name = process_line(line)
+                        trip = process_line(line)
+                        start_name = trip['start_station_name']
+                        stop_name = trip['stop_station_name']
                         starts[start_name] += 1
                         stops[stop_name] += 1
     all_names = sorted(set(starts.keys()) | set(stops.keys()))
