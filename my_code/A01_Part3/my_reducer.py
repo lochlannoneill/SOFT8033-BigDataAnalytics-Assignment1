@@ -17,33 +17,56 @@
 #
 # --------------------------------------------------------
 
+
 # ------------------------------------------
 # IMPORTS
 # ------------------------------------------
 import sys
 import codecs
+from collections import defaultdict
 
 
 # ------------------------------------------
 # FUNCTION my_reduce
 # ------------------------------------------
 def process_line(line):
+    """
+    Processes a line of input and extracts the station name, start count and stop count.
+
+    Args:
+        line (str): A line of input with the format 'station_name\t(start_count, stop_count)'.
+
+    Returns:
+        tuple: A tuple containing the station name and a tuple of start count and stop count.
+    """
     fields = line.strip().split("\t")
     station_name = fields[0]
     start_count, stop_count = map(int, fields[1][1:-1].split(", "))
     return station_name, (start_count, stop_count)
 
-def my_reduce(my_input_stream, my_output_stream, my_reducer_input_parameters=None):
-    results = {}
+# ------------------------------------------
+# FUNCTION my_reduce
+# ------------------------------------------
+def my_reduce(my_input_stream, my_output_stream, my_reducer_input_parameters):
+    """
+    Reads lines from the input stream, processes them using process_line(), and aggregates the results
+    into a dictionary. Then, sorts the dictionary by station name and writes the results to the output
+    stream.
+
+    Args:
+        my_input_stream (file): The input stream to read data from.
+        my_output_stream (file): The output stream to write results to.
+        my_reducer_input_parameters: TODO - idk why i need this as a parameter tbh, but its in the brief...so here we are
+
+    Returns:
+        None
+    """
+    results = defaultdict(lambda: (0, 0))
     for line in my_input_stream:
         station, (start_count, stop_count) = process_line(line)
-        if station not in results:
-            results[station] = (0, 0)
         results[station] = (results[station][0] + start_count, results[station][1] + stop_count)
-    for station in sorted(results.keys()):
-        (start_count, stop_count) = results[station]
+    for station, (start_count, stop_count) in sorted(results.items()):
         my_output_stream.write(f"{station}\t({start_count}, {stop_count})\n")
-
 
 
 # ---------------------------------------------------------------

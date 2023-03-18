@@ -22,31 +22,50 @@
 # IMPORTS
 # ------------------------------------------
 import sys
-import csv
+from collections import defaultdict
 
-
-import sys
-
+# ------------------------------------------
+# FUNCTION process_line
+# ------------------------------------------
 def process_line(line):
+    """
+    Extracts the start and stop station names from a line of text containing a comma-separated list of values.
+
+    Args:
+        line: A string representing a line of text from the input file.
+
+    Returns:
+        A tuple of two tuples, where each tuple contains a station name and a count of 1. The first tuple represents
+        the start station name and the second tuple represents the stop station name.
+    """
     fields = line.strip().split(",")
     start_station_name = fields[4]
-    stop_station_name = fields[8]
+    stop_station_name =  fields[8]
     return (start_station_name, 1), (stop_station_name, 1)
 
-def my_map(my_input_stream, my_output_stream, my_mapper_input_parameters=None):
-    results = {}
+# ------------------------------------------
+# FUNCTION my_map
+# ------------------------------------------
+def my_map(my_input_stream, my_output_stream, my_mapper_input_parameters):
+    """
+    Reads lines of text from an input stream, processes each line using the process_line function, and writes the
+    results to an output stream.
+
+    Args:
+        my_input_stream: An iterable object representing the input stream.
+        my_output_stream: A TextIO object representing the output stream.
+        my_mapper_input_parameters: TODO - idk why i need this as a parameter tbh, but its in the brief...so here we are
+
+    Returns:
+        None.
+    """
+    results = defaultdict(lambda: (0, 0))
     for line in my_input_stream:
         (start_station, start_count), (stop_station, stop_count) = process_line(line)
-        if start_station not in results:
-            results[start_station] = (0, 0)
-        if stop_station not in results:
-            results[stop_station] = (0, 0)
         results[start_station] = (results[start_station][0] + start_count, results[start_station][1])
         results[stop_station] = (results[stop_station][0], results[stop_station][1] + stop_count)
-    for station in sorted(results.keys()):
-        (start_count, stop_count) = results[station]
+    for station, (start_count, stop_count) in sorted(results.items()):
         my_output_stream.write(f"{station}\t({start_count}, {stop_count})\n")
-
 
 
 # ---------------------------------------------------------------
