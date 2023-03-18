@@ -64,7 +64,6 @@ def parse_in(input_folder, BIKE_ID):
                             trips.append(trip)
                             stations[trip["start_station_id"]] = trip["start_station_name"]
                             stations[trip["stop_station_id"]] = trip["stop_station_name"]
-
     return trips, stations
 
 
