@@ -27,12 +27,24 @@ import codecs
 # ------------------------------------------
 # FUNCTION my_reduce
 # ------------------------------------------
-def my_reduce(my_input_stream,
-              my_output_stream,
-              my_reducer_input_parameters
-             ):
+def process_line(line):
+    fields = line.strip().split("\t")
+    station_name = fields[0]
+    start_count, stop_count = map(int, fields[1][1:-1].split(", "))
+    return station_name, (start_count, stop_count)
 
-    pass
+def my_reduce(my_input_stream, my_output_stream, my_reducer_input_parameters=None):
+    results = {}
+    for line in my_input_stream:
+        station, (start_count, stop_count) = process_line(line)
+        if station not in results:
+            results[station] = (0, 0)
+        results[station] = (results[station][0] + start_count, results[station][1] + stop_count)
+    for station in sorted(results.keys()):
+        (start_count, stop_count) = results[station]
+        my_output_stream.write(f"{station}\t({start_count}, {stop_count})\n")
+
+
 
 # ---------------------------------------------------------------
 #           PYTHON EXECUTION

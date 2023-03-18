@@ -105,13 +105,16 @@ def parse_out(output_file, starts, stops, names):
         names (list): A list of unique station names to include in the output file.
 
     Returns:
-        None
+        count (int): Count file write iterations
     """
+    count = 0
     with open(output_file, 'w') as file:
         for name in names:
             start_count = starts.get(name, 0)
             stop_count = stops.get(name, 0)
             file.write(f"{name}\t({start_count}, {stop_count})\n")
+            count += 1
+    return count
 
 
 # ------------------------------------------
@@ -129,11 +132,9 @@ def my_main(input_folder, output_file):
         None
     """
     starts, stops, names = parse_in(input_folder)
-    print(len(starts), 'total starts => ', dict(list(starts.items())[-1:]))  # 796
-    print(len(stops), 'total stops => ', dict(list(stops.items())[-1:]))  # 799
-    print(len(names), 'unique names => ', names[-1:]) # 800
-
-    parse_out(output_file, starts, stops, names)
+    count = parse_out(output_file, starts, stops, names)
+    
+    print("{} entries written to '{}'".format(count, output_file))
 
 
 # ---------------------------------------------------------------

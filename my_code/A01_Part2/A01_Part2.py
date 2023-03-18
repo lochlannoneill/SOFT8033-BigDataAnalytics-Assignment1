@@ -81,8 +81,9 @@ def parse_out(output_file, trips, stations):
         stations (dict): A dictionary mapping station IDs to their names.
 
     Returns:
-        None
+        count (int): Count file write iterations
     """
+    count = 0
     for i in range(len(trips)-1):
         current_trip = trips[i]
         next_trip = trips[i+1]
@@ -95,6 +96,8 @@ def parse_out(output_file, trips, stations):
 
             output = f"By_Truck\t({start_time}, {start_station}, {end_time}, {end_station})\n"
             output_file.write(output)
+            count += 1
+    return count
 
 
 # ------------------------------------------
@@ -102,7 +105,9 @@ def parse_out(output_file, trips, stations):
 # ------------------------------------------
 def my_main(input_folder, output_file, BIKE_ID):
     trips, stations = parse_in(input_folder, BIKE_ID)
-    parse_out(output_file, trips, stations)
+    count = parse_out(output_file, trips, stations)
+    
+    print("{} entries written to '{}'".format(count, output_file))
 
 
 # ---------------------------------------------------------------
