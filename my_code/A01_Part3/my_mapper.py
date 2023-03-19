@@ -54,7 +54,7 @@ def my_map(my_input_stream, my_output_stream, my_mapper_input_parameters):
     Args:
         my_input_stream: An iterable object representing the input stream.
         my_output_stream: A TextIO object representing the output stream.
-        my_mapper_input_parameters: TODO - idk why i need this as a parameter tbh, but its in the brief...so here we are
+        my_mapper_input_parameters: TODO - idk why i need this as a parameter, but its in the brief...so here we are
 
     Returns:
         None.

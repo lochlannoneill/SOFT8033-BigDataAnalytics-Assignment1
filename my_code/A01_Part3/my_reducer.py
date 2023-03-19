@@ -56,7 +56,7 @@ def my_reduce(my_input_stream, my_output_stream, my_reducer_input_parameters):
     Args:
         my_input_stream (file): The input stream to read data from.
         my_output_stream (file): The output stream to write results to.
-        my_reducer_input_parameters: TODO - idk why i need this as a parameter tbh, but its in the brief...so here we are
+        my_reducer_input_parameters: TODO - idk why i need this as a parameter, but its in the brief...so here we are
 
     Returns:
         None
