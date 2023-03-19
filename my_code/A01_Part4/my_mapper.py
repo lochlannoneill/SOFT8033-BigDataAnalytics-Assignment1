@@ -42,17 +42,11 @@ def process_line(line):
     return res
 
 def my_map(my_input_stream, my_output_stream, my_mapper_input_parameters):
-    trips = []
     for line in my_input_stream:
         trip = process_line(line)
         # print('my_mapper <var: trip> == ', trip)
         if trip["bike_id"] == my_mapper_input_parameters[0]:
-            trips.append(trip)
-    # print('my_mapper <var: trips> == ', trips)
-    trips.sort(key=lambda x: x["start_time"])  # sort by start time
-    for i in range(len(trips) - 1):
-        if trips[i]["stop_station_id"] != trips[i+1]["start_station_id"]:  # if the bike was moved from one station to another
-            my_output_stream.write(f"By_Truck\t({trips[i]['stop_station_id']}, {trips[i]['stop_station_name']}, {trips[i+1]['start_station_id']}, {trips[i+1]['start_station_name']})\n")
+            my_output_stream.write("universal\t({} @ {} @ {} @ {})\n".format(trip['start_time'], trip['stop_time'], trip['start_station_name'], trip['stop_station_name']))
 
 
 # ---------------------------------------------------------------
