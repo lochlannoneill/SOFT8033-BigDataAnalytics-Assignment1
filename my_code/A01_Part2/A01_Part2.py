@@ -105,8 +105,13 @@ def parse_out(output_file, trips, stations):
 def my_main(input_folder, output_file, BIKE_ID):
     trips, stations = parse_in(input_folder, BIKE_ID)
     count = parse_out(output_file, trips, stations)
-    
-    print("{} entries written to '{}'".format(count, output_file))
+
+    if count == 1:
+        # print(f"'{count}' entry written to '{output_file}'")
+        print(f"'{count}' entries written to '{output_file.name}'")
+    else:
+        # print(f"'{count}' entries written to '{output_file}'")
+        print(f"'{count}' entries written to '{output_file.name}'")
 
 
 # ---------------------------------------------------------------

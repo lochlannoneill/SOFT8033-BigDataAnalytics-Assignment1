@@ -65,8 +65,16 @@ def my_reduce(my_input_stream, my_output_stream, my_reducer_input_parameters):
     for line in my_input_stream:
         station, (start_count, stop_count) = process_line(line)
         results[station] = (results[station][0] + start_count, results[station][1] + stop_count)
+        
+    count = 0
     for station, (start_count, stop_count) in sorted(results.items()):
         my_output_stream.write(f"{station}\t({start_count}, {stop_count})\n")
+        count += 1
+    
+    if count == 1:
+        print(f"'{count}' entry written to '{my_output_stream.name}'")
+    else:
+        print(f"'{count}' entries written to '{my_output_stream.name}'")
 
 
 # ---------------------------------------------------------------

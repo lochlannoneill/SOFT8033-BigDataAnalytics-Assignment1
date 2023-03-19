@@ -123,20 +123,15 @@ def parse_out(output_file, starts, stops, names):
 # FUNCTION my_main
 # ------------------------------------------
 def my_main(input_folder, output_file):
-    """
-    Parse input folder and generate output file with information about bike trips.
-
-    Args:
-        input_folder (str): Path to the folder containing input CSV files.
-        output_file (str): Path to the output file.
-
-    Returns:
-        None
-    """
     starts, stops, names = parse_in(input_folder)
     count = parse_out(output_file, starts, stops, names)
     
-    print("{} entries written to '{}'".format(count, output_file))
+    if count == 1:
+        print(f"'{count}' entry written to '{output_file}'")
+        # print(f"'{count}' entries written to '{output_file.name}'")
+    else:
+        print(f"'{count}' entries written to '{output_file}'")
+        # print(f"'{count}' entries written to '{output_file.name}'")
 
 
 # ---------------------------------------------------------------

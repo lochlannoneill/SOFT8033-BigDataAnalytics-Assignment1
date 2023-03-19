@@ -42,11 +42,25 @@ def process_line(line):
     return res
 
 def my_map(my_input_stream, my_output_stream, my_mapper_input_parameters):
+    count = 0
     for line in my_input_stream:
         trip = process_line(line)
         # print('my_mapper <var: trip> == ', trip)
         if trip["bike_id"] == my_mapper_input_parameters[0]:
-            my_output_stream.write("universal\t({} @ {} @ {} @ {})\n".format(trip['start_time'], trip['stop_time'], trip['start_station_name'], trip['stop_station_name']))
+            my_output_stream.write(
+                "universal\t({} @ {} @ {} @ {})\n".format(
+                    trip['start_time'].strftime('%Y/%m/%d %H:%M:%S'),
+                    trip['stop_time'].strftime('%Y/%m/%d %H:%M:%S'),
+                    trip['start_station_name'],
+                    trip['stop_station_name']
+                )
+            )
+            count += 1
+        
+    if count == 1:
+        print(f"'{count}' entry written to '{my_output_stream.name}'")
+    else:
+        print(f"'{count}' entries written to '{my_output_stream.name}'")
 
 
 # ---------------------------------------------------------------

@@ -22,26 +22,48 @@
 # ------------------------------------------
 import sys
 import codecs
+import datetime
+import json
 
 
 # ------------------------------------------
 # FUNCTION my_reduce
 # ------------------------------------------
 def my_reduce(my_input_stream, my_output_stream, my_reducer_input_parameters):
-    bike_trips = {}
-    for line in my_input_stream:
-        parts = line.strip().split("\t")
-        bike_id = int(parts[0])
-        trip_info = eval(parts[1])
-        if bike_id not in bike_trips:
-            bike_trips[bike_id] = []
-        bike_trips[bike_id].append(trip_info)
-    print('my_reduce <var: bike_trips> == ', bike_trips)
-    for bike_id, trips in bike_trips.items():
-        trips.sort(key=lambda x: x[0])  # sort by time
-        for trip in trips:
-            my_output_stream.write(f"By_Truck\t({trip[0]}, {trip[1]}, {trip[2]}, {trip[3]})\n")
+    """
+        This function reads lines from my_input_stream, formats them as required, and writes them to my_output_stream.
 
+    Args:
+        - my_input_stream: A file-like object for reading input data.
+        - my_output_stream: A file-like object for writing output data.
+        - my_reducer_input_parameters: Additional parameters to be used in the reducer.
+
+    Returns:
+        - None
+    """
+    count = 0
+    for line in my_input_stream:
+        key_value = line.strip().split("\t")
+        if key_value[0] == "universal":
+            trip = dict(zip(('start_time', 'stop_time', 'start_station_name', 'stop_station_name'), key_value[1].strip('()').split(" @ ")))
+            my_output_stream.write(
+                "By_Truck\t({}, {}, {}, {})\n".format(
+                    datetime.datetime.strptime(trip['start_time'], '%Y/%m/%d %H:%M:%S').strftime('%Y/%m/%d %H:%M:%S'),
+                    trip['start_station_name'],
+                    datetime.datetime.strptime(trip['stop_time'], '%Y/%m/%d %H:%M:%S').strftime('%Y/%m/%d %H:%M:%S'),
+                    trip['stop_station_name']
+                )
+            )
+            count += 1
+            
+    if count == 1:
+        print(f"'{count}' entry written to '{my_output_stream.name}'")
+    else:
+        print(f"'{count}' entries written to '{my_output_stream.name}'")
+
+
+
+    
 
 # ---------------------------------------------------------------
 #           PYTHON EXECUTION
