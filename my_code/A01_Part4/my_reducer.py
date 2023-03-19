@@ -27,12 +27,20 @@ import codecs
 # ------------------------------------------
 # FUNCTION my_reduce
 # ------------------------------------------
-def my_reduce(my_input_stream,
-              my_output_stream,
-              my_reducer_input_parameters
-             ):
-
-    pass
+def my_reduce(my_input_stream, my_output_stream, my_reducer_input_parameters):
+    bike_trips = {}
+    for line in my_input_stream:
+        parts = line.strip().split("\t")
+        bike_id = int(parts[0])
+        trip_info = eval(parts[1])
+        if bike_id not in bike_trips:
+            bike_trips[bike_id] = []
+        bike_trips[bike_id].append(trip_info)
+    print('my_reduce <var: bike_trips> == ', bike_trips)
+    for bike_id, trips in bike_trips.items():
+        trips.sort(key=lambda x: x[0])  # sort by time
+        for trip in trips:
+            my_output_stream.write(f"By_Truck\t({trip[0]}, {trip[1]}, {trip[2]}, {trip[3]})\n")
 
 
 # ---------------------------------------------------------------

@@ -22,66 +22,37 @@
 # ------------------------------------------
 import sys
 import codecs
+import datetime
 
 
 # ------------------------------------------
 # FUNCTION process_line
 # ------------------------------------------
 def process_line(line):
-    # 1. We create the output variable
-    res = ()
-
-    # 2. We get the parameter list from the line
-    params_list = line.strip().split(",")
-
-    #(00) start_time => A String representing the time the trip started at <%d/%m/%Y %H:%M:%S>. Example: “2019/05/02 10:05:00”
-    #(01) stop_time => A String representing the time the trip finished at <%d/%m/%Y %H:%M:%S>. Example: “2019/05/02 10:10:00”
-    #(02) trip_duration => An Integer representing the duration of the trip. Example: 300
-    #(03) start_station_id => An Integer representing the ID of the CityBike station the trip started from. Example: 150
-    #(04) start_station_name => A String representing the name of the CitiBike station the trip started from. Example: “E 2 St &; Avenue C”.
-    #(05) start_station_latitude => A Float representing the latitude of the CitiBike station the trip started from. Example: 40.7208736
-    #(06) start_station_longitude => A Float representing the longitude of the CitiBike station the trip started from. Example:  -73.98085795
-    #(07) stop_station_id => An Integer representing the ID of the CityBike station the trip stopped at. Example: 150
-    #(08) stop_station_name => A String representing the name of the CitiBike station the trip stopped at. Example: “E 2 St &; Avenue C”.
-    #(09) stop_station_latitude => A Float representing the latitude of the CitiBike station the trip stopped at. Example: 40.7208736
-    #(10) stop_station_longitude => A Float representing the longitude of the CitiBike station the trip stopped at. Example:  -73.98085795
-    #(11) bike_id => An Integer representing the id of the bike used in the trip. Example:  33882
-    #(12) user_type => A String representing the type of user using the bike (it can be either “Subscriber” or “Customer”). Example: “Subscriber”.
-    #(13) birth_year => An Integer representing the birth year of the user using the bike. Example:  1990
-    #(14) gender => An Integer representing the gender of the user using the bike (it can be either 0 => Unknown; 1 => male; 2 => female). Example:  2.
-    #(15) trip_id => An Integer representing the id of the trip. Example:  190
-
-    # 3. If the list contains the right amount of parameters
-    if (len(params_list) == 16):
-        # 3.1. We set the right type for the parameters
-        params_list[2] = int(params_list[2])
-        params_list[3] = int(params_list[3])
-        params_list[5] = float(params_list[5])
-        params_list[6] = float(params_list[6])
-        params_list[7] = int(params_list[7])
-        params_list[9] = float(params_list[9])
-        params_list[10] = float(params_list[10])
-        params_list[11] = int(params_list[11])
-        params_list[13] = int(params_list[13])
-        params_list[14] = int(params_list[14])
-        params_list[15] = int(params_list[15])
-
-        # 3.2. We assign res
-        res = tuple(params_list)
-
-    # 4. We return res
+    res = {}
+    fields = line.strip().split(",")
+    if len(fields) == 16:
+        res["start_time"] = datetime.datetime.strptime(fields[0], "%Y/%m/%d %H:%M:%S")
+        res["stop_time"] = datetime.datetime.strptime(fields[1], "%Y/%m/%d %H:%M:%S")
+        res["start_station_id"] = int(fields[3])
+        res["start_station_name"] = fields[4]
+        res["stop_station_id"] = int(fields[7])
+        res["stop_station_name"] = fields[8]
+        res["bike_id"] = int(fields[11])
     return res
 
-
-# ------------------------------------------
-# FUNCTION my_map
-# ------------------------------------------
-def my_map(my_input_stream,
-           my_output_stream,
-           my_mapper_input_parameters
-          ):
-
-    pass
+def my_map(my_input_stream, my_output_stream, my_mapper_input_parameters):
+    trips = []
+    for line in my_input_stream:
+        trip = process_line(line)
+        # print('my_mapper <var: trip> == ', trip)
+        if trip["bike_id"] == my_mapper_input_parameters[0]:
+            trips.append(trip)
+    # print('my_mapper <var: trips> == ', trips)
+    trips.sort(key=lambda x: x["start_time"])  # sort by start time
+    for i in range(len(trips) - 1):
+        if trips[i]["stop_station_id"] != trips[i+1]["start_station_id"]:  # if the bike was moved from one station to another
+            my_output_stream.write(f"By_Truck\t({trips[i]['stop_station_id']}, {trips[i]['stop_station_name']}, {trips[i+1]['start_station_id']}, {trips[i+1]['start_station_name']})\n")
 
 
 # ---------------------------------------------------------------
@@ -95,7 +66,8 @@ if __name__ == '__main__':
     # 1. We collect the input values
     my_input_stream = sys.stdin
     my_output_stream = sys.stdout
-    my_mapper_input_parameters = [ bike_id ]
+    BIKE_ID = 35143
+    my_mapper_input_parameters = [ BIKE_ID ]  # TODO - take as paramter from my_meta-alogorithm.py
 
     # 2. We call to my_map
     my_map(my_input_stream,
